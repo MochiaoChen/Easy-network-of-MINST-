@@ -1,5 +1,11 @@
+"""原始版本，保留作为基线对照（10 轮 94.02%，约 18 秒）。
+
+算法部分一行没动；只把「为了 11 MB 数据装 500 MB TensorFlow」的依赖换成了
+mnist_loader。改进版见 network.py / train.py，对比见 README。
+"""
 import numpy as np
-from tensorflow.keras.datasets import mnist
+
+import mnist_loader
 
 
 # 激活函数 sigmoid 及其导数
@@ -93,13 +99,14 @@ class Network:
 
 
 def load_mnist_data():
-    (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+    (train_images, train_labels), (test_images, test_labels) = mnist_loader.load_raw()
     training_data = [(x.reshape(784, 1) / 255.0, y) for x, y in zip(train_images, train_labels)]
     test_data = [(x.reshape(784, 1) / 255.0, y) for x, y in zip(test_images, test_labels)]
     return training_data, test_data, test_data
 
 
 if __name__ == "__main__":
+    np.random.seed(0)
     training_data, test_data, validation_data = load_mnist_data()
     net = Network([784, 30, 10])
     net.SGD(training_data, epochs=10, mini_batch_size=10, eta=1.0, test_data=test_data)

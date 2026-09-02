@@ -172,3 +172,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# 数据缓存与训练产物
+data/
+*.npz
